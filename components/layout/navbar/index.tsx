@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from '@/components/ui/button';
+import LoginDialog from '@/modules/home-module/compoents/login-dialog';
+import LoginSheet from '@/modules/home-module/compoents/login-dialog/login-sheet';
 
 const Navbar = () => {
       const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -60,17 +62,17 @@ const Navbar = () => {
             </div>
 
          {/* Action Buttons */}
-            <div className="hidden md:flex items-center space-x-4">
-              <Link href="/login">
-                <Button variant="ghost" className="text-gray-700">
-                  Login
-                </Button>
-              </Link>
-              <Link href="/signup">
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6">
+            <div className="hidden md:flex items-center space-x-3">
+
+                   <LoginDialog />
+             
+             
+                <Button variant={'outline'} className="text-black px-5 text-sm cursor-pointer rounded-full"
+                size="sm"
+                >
                   Signup
                 </Button>
-              </Link>
+              
             </div>
 
             {/* Mobile Menu Button */}
@@ -120,16 +122,14 @@ const Navbar = () => {
                 WhatsApp Groups
               </Link>
               <div className="pt-4 space-y-2">
-                <Link href="/login" onClick={() => setMobileNavOpen(false)}>
-                  <Button variant="ghost" className="w-full">
-                    Login
-                  </Button>
-                </Link>
-                <Link href="/signup" onClick={() => setMobileNavOpen(false)}>
+              
+                  <LoginSheet />
+                
+             
                   <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
                     Signup
                   </Button>
-                </Link>
+                
               </div>
             </div>
           )}
