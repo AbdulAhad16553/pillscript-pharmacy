@@ -4,6 +4,8 @@ import "./globals.css";
 import NhostProvider from "@/provider/NhostProvider";
 import ApolloProvider from "@/provider/ApolloProvider";
 import { Toaster } from "sonner";
+import Navbar from "@/components/layout/navbar";
+import Footer from "@/components/layout/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +35,9 @@ export default function RootLayout({
         <NhostProvider>
           <ApolloProvider>
             <Toaster position="top-right" richColors />
+            <Navbar />
             {children}
+            <Footer />
           </ApolloProvider>
         </NhostProvider>
       </body>
