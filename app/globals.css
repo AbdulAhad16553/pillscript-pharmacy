@@ -147,7 +147,17 @@
   }
 }
 
-.animate-blob {
+
+
+.animate-slide-up {
+  animation: slide-up 0.35s ease-out forwards !important;
+}
+
+.animate-slide-down {
+  animation: slide-down 0.35s ease-out forwards !important;
+}
+
+/* .animate-blob {
   animation: blob 7s infinite;
 }
 
@@ -161,7 +171,7 @@
 
 .animation-delay-4000 {
   animation-delay: 4s;
-}
+} */
 
 /* Gradient text utilities */
 .gradient-text {
