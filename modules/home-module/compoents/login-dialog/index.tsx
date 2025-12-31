@@ -21,7 +21,7 @@ const LoginDialog = () => {
           size="sm"
           className="bg-black text-white px-5 rounded-full hover:bg-white hover:text-black border transition-all"
         >
-          Login
+          Log in
         </Button>
       </DialogTrigger>
 
@@ -29,14 +29,7 @@ const LoginDialog = () => {
        onInteractOutside={(e) => e.preventDefault()} 
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
-        <DialogHeader>
-          <DialogTitle className="text-center text-xl font-semibold">
-            Sign in to your account
-          </DialogTitle>
-          <DialogDescription className="text-center text-sm">
-            You’ll get smarter responses and can upload files, images, and more.
-          </DialogDescription>
-        </DialogHeader>
+        
         <LoginButton />
 
      
