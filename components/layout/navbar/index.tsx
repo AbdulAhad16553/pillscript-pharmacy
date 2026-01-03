@@ -59,7 +59,7 @@ const Navbar = () => {
 
           <div className="flex items-center space-x-3">
             <LoginDialog />
-            <Link href="/sign-up">
+            <Link href="/signup">
              <Button
               variant={"outline"}
               className="text-black hidden lg:block text-sm cursor-pointer rounded-full"

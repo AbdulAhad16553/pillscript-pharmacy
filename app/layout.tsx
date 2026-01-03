@@ -35,9 +35,9 @@ export default function RootLayout({
         <NhostProvider>
           <ApolloProvider>
             <Toaster position="top-right" richColors />
-            <Navbar />
+            {/* <Navbar /> */}
             {children}
-            <Footer />
+            {/* <Footer /> */}
           </ApolloProvider>
         </NhostProvider>
       </body>
