@@ -19,9 +19,12 @@ const LoginDialog = () => {
       <DialogTrigger asChild>
         <Button
           size="sm"
-          className="bg-black text-white px-5 rounded-full hover:bg-white hover:text-black border transition-all"
+          className="bg-black text-white  rounded-full hover:bg-black/80 hover:text-white border transition-all"
         >
-          Log in
+          <div className="flex items-center justify-center">
+           Log in
+          </div>
+          
         </Button>
       </DialogTrigger>
 
