@@ -52,9 +52,10 @@ const DistributorsList = () => {
   }, [selectedDistrict, selectedType, searchTerm, sortBy, distributors]);
 
   return (
-    <Container>
-      <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6 py-10">
-        <aside className="rounded-xl border bg-white p-4 h-fit sticky top-20 space-y-4">
+    <Container className="w-full md:max-w-[592px]">
+      <div className="grid grid-cols-1  gap-6 py-10">
+        {/* filter left side */}
+        {/* <aside className="rounded-xl border bg-white p-4 h-fit sticky top-20 space-y-4">
           <h3 className="font-semibold mb-2">Filters</h3>
           <div className="space-y-2">
             <p className="text-sm font-medium">District</p>
@@ -112,7 +113,7 @@ const DistributorsList = () => {
               </SelectContent>
             </Select>
           </div>
-        </aside>
+        </aside> */}
 
       
         <div className="space-y-4">
@@ -125,7 +126,7 @@ const DistributorsList = () => {
           />
 
       
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6">
             {filteredDistributors.length > 0 ? (
               filteredDistributors.map((dist: any) => (
                 <DistributorCard key={dist.id} dist={dist} />
