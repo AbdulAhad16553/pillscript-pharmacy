@@ -1,3 +1,4 @@
+import ShareButton from "@/components/share-button";
 import { Copy, Check } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
@@ -14,9 +15,11 @@ const DistributorCard = ({ dist }: any) => {
     }, 2000);
   };
   return (
+    <div key={dist.id} className="rounded-[10px] border border-[#dfe3e6] bg-white  w-full  cursor-pointer transition h-full  flex flex-col">
+    
     <div
-      key={dist.id}
-      className="rounded-[10px] border border-[#dfe3e6] bg-white p-4 w-full  cursor-pointer transition h-full  flex flex-col"
+
+      className="p-4 w-full  cursor-pointer transition h-full  flex flex-col"
     >
       <div className="flex items-start gap-4">
        
@@ -38,6 +41,7 @@ const DistributorCard = ({ dist }: any) => {
           </div>
 
          
+        
       <div className="text-sm text-black mt-1 space-y-1 max-h-16 overflow-auto">
       {dist.phone.map((p: string, idx: number) => (
         <div key={idx}>
@@ -70,7 +74,16 @@ const DistributorCard = ({ dist }: any) => {
           </p>
         </div>
       </div>
+   
     </div>
+       <div className="block pb-3  md:hidden">
+       <ShareButton
+  phone={dist.phone?.[0]}
+  address={dist.address}
+  name={dist.name}
+     />
+      </div>
+      </div>
   );
 };
 
