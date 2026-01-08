@@ -37,14 +37,15 @@ const DistributorCard = ({ dist }: any) => {
             <h2 className="font-semibold text-[15px] md:text-[17px] lg:text-[20px] ">
               {dist.name} – {dist.district}
             </h2>
-            <p className="text-14px] text-[#8897a2]">{dist.type}</p>
+            <p className="text-[13px] text-[#8897a2]">{dist.type}</p>
           </div>
 
          
         
       <div className="text-sm text-black mt-1 space-y-1 max-h-16 overflow-auto">
-      {dist.phone.map((p: string, idx: number) => (
-        <div key={idx}>
+        <div className="flex flex-col md:flex-row gap-4 items-start ">
+ {dist.phone.map((p: string, idx: number) => (
+        <div key={idx} >
           <div
             onClick={() => handleCopy(p, idx)}
             className="flex items-center gap-2 cursor-pointer"
@@ -65,11 +66,13 @@ const DistributorCard = ({ dist }: any) => {
           )}
         </div>
       ))}
+        </div>
+     
     </div>
           
 
         
-          <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+          <p className="text-md text-gray-500 mt-1 line-clamp-2">
              {dist.address}
           </p>
         </div>
