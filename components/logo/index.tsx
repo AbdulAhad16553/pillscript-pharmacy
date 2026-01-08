@@ -1,16 +1,18 @@
-import Image from 'next/image'
-import React from 'react'
+import Image from "next/image";
+import React from "react";
 
 const MainLogo = () => {
   return (
-    <Image 
-    src={"/assets/images/logo.png"}
-    alt=""
-    width={50}
-    height={50}
-    className='object-contain w-full h-auto'
-    />
-  )
-}
+    <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12">
+      <Image
+        src="/assets/images/logo.png"
+        alt="PillScript Logo"
+        fill
+        className="object-contain"
+        priority
+      />
+    </div>
+  );
+};
 
-export default MainLogo
+export default MainLogo;
