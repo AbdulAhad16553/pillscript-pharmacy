@@ -34,7 +34,7 @@ const DistributorCard = ({ dist }: any) => {
        
         <div className="flex-1 flex flex-col justify-between">
           <div>
-            <h2 className="font-semibold text-[15px] md:text-[17px] lg:text-[20px] ">
+            <h2 className="font-semibold text-[13px] md:text-[15px]  lg:text-[20px] ">
               {dist.name} – {dist.district}
             </h2>
             <p className="text-[13px] text-[#8897a2]">{dist.type}</p>
@@ -43,7 +43,7 @@ const DistributorCard = ({ dist }: any) => {
          
         
       <div className="text-sm text-black mt-1 space-y-1 max-h-16 overflow-auto">
-        <div className="flex flex-col md:flex-row gap-4 items-start ">
+        <div className="flex flex-col md:flex-row gap-1 md:gap-4 items-start ">
  {dist.phone.map((p: string, idx: number) => (
         <div key={idx} >
           <div
@@ -72,7 +72,7 @@ const DistributorCard = ({ dist }: any) => {
           
 
         
-          <p className="text-md text-gray-500 mt-1 line-clamp-2">
+          <p className="text-sm md:text-md text-gray-500 mt-1 line-clamp-2 ">
              {dist.address}
           </p>
         </div>
