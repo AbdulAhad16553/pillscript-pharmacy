@@ -85,3 +85,16 @@ export const distributors = [
     logo: "/assets/images/dsitributor.jpg",
   },
 ];
+
+export const COMPANY_OPTIONS = [
+  "Unilever",
+  "Nestle",
+  "Pepsi",
+];
+
+export const DISTRICT_TOWNS: Record<string, string[]> = {
+  Lahore: ["Model Town", "Gulberg", "Johar Town"],
+  Karachi: ["Clifton", "Defence", "North Nazimabad"],
+  Islamabad: ["F-6", "F-7", "G-11"],
+};
+
