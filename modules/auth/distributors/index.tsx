@@ -72,7 +72,7 @@ const DistributorsList = () => {
      
 
         {/* List */}
-        <div className="grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 gap-4 md:gap-6">
           {filteredDistributors.length > 0 ? (
             filteredDistributors.map((dist: any) => (
               <DistributorCard key={dist.id} dist={dist} />

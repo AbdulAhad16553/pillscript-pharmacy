@@ -15,11 +15,9 @@ const DistributorCard = ({ dist }: any) => {
     }, 2000);
   };
   return (
-    <div key={dist.id} className="rounded-[10px] border border-[#dfe3e6] bg-white  w-full  cursor-pointer transition h-full  flex flex-col">
-    
+    <div key={dist.id} className=" rounded-0 md:rounded-[10px] border-t border-[#dfe3e6]  md:border md:border-[#dfe3e6] bg-transparent md:bg-white  w-full shadow-none md:shadow  cursor-pointer transition h-full  flex flex-col">
     <div
-
-      className="p-4 w-full  cursor-pointer transition h-full  flex flex-col"
+      className="p-2 md:p-4 w-full  cursor-pointer transition h-full  flex flex-col"
     >
       <div className="flex items-start gap-4">
        
