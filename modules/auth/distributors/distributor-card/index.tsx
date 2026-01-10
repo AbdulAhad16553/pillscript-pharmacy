@@ -19,7 +19,7 @@ const DistributorCard = ({ dist }: any) => {
     <div
       className="p-2 md:p-4 w-full  cursor-pointer transition h-full  flex flex-col"
     >
-      <div className="flex items-start gap-4">
+      <div className="flex items-start gap-2 md:gap-4">
        
         <Image
           src={dist.logo}
@@ -77,7 +77,7 @@ const DistributorCard = ({ dist }: any) => {
       </div>
    
     </div>
-       <div className="block pb-3  md:hidden">
+       <div className="block pb-0 md:pb-3  md:hidden">
        <ShareButton
   phone={dist.phone?.[0]}
   address={dist.address}
