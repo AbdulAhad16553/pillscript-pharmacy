@@ -19,11 +19,9 @@ const MainNavbar = () => {
   const router = useRouter()
 
   return (
-    <div className="sticky top-0 z-50 bg-white border-b">
+    <div className="sticky top-0 z-50 bg-white border-b block md:hidden">
         {pathname === "/"  ? <Navbar />:  <>
           <div className="flex items-center gap-3 px-4 py-3 md:px-6">
-        
-        
         <button
           onClick={() => router.back()}
           className="flex items-center cursor-pointer justify-center rounded-full p-2 hover:bg-gray-100 transition"
