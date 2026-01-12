@@ -23,19 +23,19 @@ const Navbar = () => {
   const pathname = usePathname();
 
   return (
-    <nav className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-200">
+    <nav className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-200 ">
       <Container>
         <div className="flex justify-between items-center h-20">
           <div className="flex items-center">
             <div className="relative">
                <MainLogo />
             </div>
-            <span className="text-lg font-bold hidden md:block">
+            <span className="text-sm md:text-lg font-bold ">
               PillScript <span className="text-blue-500">Pharmacy</span>
             </span>
           </div>
           
-          <div className="hidden lg:flex items-center gap-2 lg:gap-4">
+          <div className="hidden lg:flex items-center gap-2 lg:gap-4  ">
             {MenuData.map((item: any) => {
               const isActive = pathname === item.href;
 

@@ -9,7 +9,7 @@ export default function MainLayout({
 }) {
   return (
     <>
-      {/* <Navbar /> */}
+       <Navbar />
       
       <MainNavbar />
       <main className="min-h-screen">{children}</main>
