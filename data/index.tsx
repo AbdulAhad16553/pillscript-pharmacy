@@ -96,7 +96,7 @@ export const DISTRICT_TOWNS: Record<string, string[]> = {
 export const dummyDoctorData = [
   {
     id: 1,
-    profilePicture: "/assets/images/doctor1.jfif",
+    profilePicture: "/assets/images/doctor_1.png",
     name: "Dr. Ahmed Khan",
     verified: true,
     pmdc: "PMDC 7860-P",
@@ -116,7 +116,7 @@ export const dummyDoctorData = [
   },
   {
     id: 2,
-    profilePicture: "/assets/images/doctor1.jfif",
+    profilePicture: "/assets/images/doctor_1.png",
     name: "Dr. Sara Malik",
     verified: true,
     pmdc: "PMDC 9123-P",
