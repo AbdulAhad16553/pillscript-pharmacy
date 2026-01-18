@@ -9,9 +9,13 @@ export default function MainLayout({
 }) {
   return (
     <>
-       <Navbar />
-      
-      <MainNavbar />
+      <div className="hidden md:block">
+        <Navbar />
+      </div>
+
+      <div className="block md:hidden">
+        <MainNavbar />
+      </div>
       <main className="min-h-screen">{children}</main>
       <Footer />
     </>
