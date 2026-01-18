@@ -23,10 +23,9 @@ export const MenuData = [
   {
     id: 5,
     label: "Doctor List",
-    href: "#whatsapp",
+    href: "doctor",
   },
 ];
-
 
 export const distributors = [
   {
@@ -86,11 +85,7 @@ export const distributors = [
   },
 ];
 
-export const COMPANY_OPTIONS = [
-  "Unilever",
-  "Nestle",
-  "Pepsi",
-];
+export const COMPANY_OPTIONS = ["Unilever", "Nestle", "Pepsi"];
 
 export const DISTRICT_TOWNS: Record<string, string[]> = {
   Lahore: ["Model Town", "Gulberg", "Johar Town"],
@@ -98,3 +93,45 @@ export const DISTRICT_TOWNS: Record<string, string[]> = {
   Islamabad: ["F-6", "F-7", "G-11"],
 };
 
+export const dummyDoctorData = [
+  {
+    id: 1,
+    profilePicture: "/assets/images/doctor1.jfif",
+    name: "Dr. Ahmed Khan",
+    verified: true,
+    pmdc: "PMDC 7860-P",
+    specialization: "Cardiologist",
+    dateOfBirth: "1985-04-12",
+    phone: "+92 300 1234567",
+    hospitalDuties: [
+      {
+        hospitalName: "Shifa International Hospital",
+        dutyTime: "08:00 AM - 02:00 PM",
+      },
+      {
+        hospitalName: "Aga Khan University Hospital",
+        dutyTime: "04:00 PM - 08:00 PM",
+      },
+    ],
+  },
+  {
+    id: 2,
+    profilePicture: "/assets/images/doctor1.jfif",
+    name: "Dr. Sara Malik",
+    verified: true,
+    pmdc: "PMDC 9123-P",
+    specialization: "Gynecologist",
+    dateOfBirth: "1988-09-25",
+    phone: "+92 321 9876543",
+    hospitalDuties: [
+      {
+        hospitalName: "Liaquat National Hospital",
+        dutyTime: "09:00 AM - 01:00 PM",
+      },
+      {
+        hospitalName: "Ziauddin Hospital",
+        dutyTime: "03:00 PM - 07:00 PM",
+      },
+    ],
+  },
+];
