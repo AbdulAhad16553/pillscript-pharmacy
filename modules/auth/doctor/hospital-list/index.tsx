@@ -3,12 +3,13 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 const DoctorHospitalList = ({ hospitalDuties }: any) => {
   return (
     <ScrollArea className="w-full">
-      <div className="flex w-full justify-between items-center  gap-3 md:gap-3">
+      <div className="flex gap-3">
         {hospitalDuties?.map((duty: any, idx: number) => (
           <div
             key={idx}
             className="
-              w-full md:min-w-0
+              min-w-[90%] md:min-w-0
+              md:w-full
               rounded-lg
               border
               bg-white
@@ -17,9 +18,7 @@ const DoctorHospitalList = ({ hospitalDuties }: any) => {
               text-gray-600
             "
           >
-            <p className=" font-semibold text-[14px] md:text-[14px]">
-              {duty.hospitalName}
-            </p>
+            <p className="font-semibold text-[14px]">{duty.hospitalName}</p>
             <p className="text-gray-500 mt-1">🕒 {duty.dutyTime}</p>
           </div>
         ))}
