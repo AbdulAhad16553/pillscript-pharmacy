@@ -6,6 +6,7 @@ import React from "react";
 import Navbar from "..";
 
 const pageTitles: Record<string, string> = {
+
   "/distributors": "Distributors",
   "/doctor": "Doctor",
   "/medicines": "Medicines",
@@ -27,7 +28,7 @@ const MainNavbar = () => {
         <>
           <div className="flex items-center gap-3 px-4 py-3 md:px-6">
             <button
-              onClick={() => router.back()}
+              onClick={() => router.push('/')}
               className="flex items-center cursor-pointer justify-center rounded-full p-2 hover:bg-gray-100 transition"
               aria-label="Go back"
             >

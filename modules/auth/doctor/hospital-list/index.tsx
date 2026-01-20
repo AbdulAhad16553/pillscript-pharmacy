@@ -8,7 +8,7 @@ const DoctorHospitalList = ({ hospitalDuties }: any) => {
           <div
             key={idx}
             className="
-              min-w-[90%] md:min-w-0
+              min-w-[90%] md:min-w-[60%]
               md:w-full
               rounded-lg
               border
@@ -18,13 +18,13 @@ const DoctorHospitalList = ({ hospitalDuties }: any) => {
               text-gray-600
             "
           >
-            <p className="font-semibold text-[14px]">{duty.hospitalName}</p>
+            <p className="font-semibold text-[15px]">{duty.hospitalName}</p>
             <p className="text-gray-500 mt-1">🕒 {duty.dutyTime}</p>
           </div>
         ))}
       </div>
 
-      <ScrollBar orientation="horizontal" className="md:hidden" />
+      <ScrollBar orientation="horizontal" className="" />
     </ScrollArea>
   );
 };
