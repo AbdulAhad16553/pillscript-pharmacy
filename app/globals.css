@@ -10,7 +10,7 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(0.95 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: #0000FF;
+  --primary: #0000ff;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: #5d5d5d;
   --secondary-foreground: oklch(0.205 0 0);
@@ -148,8 +148,6 @@
   }
 }
 
-
-
 .animate-slide-up {
   animation: slide-up 0.35s ease-out forwards !important;
 }
@@ -179,7 +177,6 @@
   @apply bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent;
 }
 
-
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -196,4 +193,8 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(to bottom, #4f46e5, #7c3aed);
+}
+
+.word-spacing-6 {
+  word-spacing: 1px;
 }
