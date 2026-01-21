@@ -104,7 +104,7 @@ export const dummyDoctorData = [
     pmdc: "PMDC 7860-P",
     specialization: "Cardiologist",
     dateOfBirth: "1985-04-12",
-    phone: "+92 300 1234567",
+    phones: ["+92 300 1234567", "+92 301 7654321"],
     hospitalDuties: [
       {
         hospitalName: "Shifa International Hospital",
@@ -126,7 +126,7 @@ export const dummyDoctorData = [
     pmdc: "PMDC 9123-P",
     specialization: "Gynecologist",
     dateOfBirth: "1988-09-25",
-    phone: "+92 321 9876543",
+    phones: ["+92 321 9876543", "+92 322 1239876", "+92 300 5558899"],
     hospitalDuties: [
       {
         hospitalName: "Liaquat National Hospital",
@@ -148,7 +148,7 @@ export const dummyDoctorData = [
     pmdc: "PMDC 6541-P",
     specialization: "Orthopedic Surgeon",
     dateOfBirth: "1982-11-03",
-    phone: "+92 333 4567890",
+    phones: ["+92 333 4567890", "+92 334 1122334"],
     hospitalDuties: [
       {
         hospitalName: "CMH Rawalpindi",
@@ -166,7 +166,7 @@ export const dummyDoctorData = [
     pmdc: "PMDC 3344-P",
     specialization: "Dermatologist",
     dateOfBirth: "1990-02-18",
-    phone: "+92 345 9988776",
+    phones: ["+92 345 9988776", "+92 346 6677889"],
     hospitalDuties: [
       {
         hospitalName: "Pakistan Institute of Medical Sciences",
@@ -184,7 +184,7 @@ export const dummyDoctorData = [
     pmdc: "PMDC 7788-P",
     specialization: "Neurologist",
     dateOfBirth: "1983-06-30",
-    phone: "+92 312 6655443",
+    phones: ["+92 312 6655443", "+92 313 9988776", "+92 300 1122334"],
     hospitalDuties: [
       {
         hospitalName: "Maroof International Hospital",

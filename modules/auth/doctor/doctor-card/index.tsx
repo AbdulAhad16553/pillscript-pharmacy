@@ -20,7 +20,7 @@ const DoctorCard = ({ data }: any) => {
           />
 
           <div className="flex flex-col gap-1 mt-1">
-            <h2 className="font-semibold text-[14px] md:text-[20px] tracking-wide word-spacing-6 mb-2 ">
+            <h2 className="font-semibold text-[20px] tracking-wide word-spacing-6 line-clamp-2 mb-2 ">
               {data.name}
             </h2>
 
@@ -44,7 +44,7 @@ const DoctorCard = ({ data }: any) => {
               </p>
             </div>
 
-            <div className="text-sm space-y-1">
+            <div className="text-sm  flex flex-col lg:flex-row space-y-1 lg:gap-2 lg:items-center">
               {data?.phones?.map((phone: string, idx: number) => {
                 const key = `phone-${idx}`;
                 return (
