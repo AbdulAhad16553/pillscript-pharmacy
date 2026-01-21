@@ -19,7 +19,10 @@ const DoctorHospitalList = ({ hospitalDuties }: any) => {
             "
           >
             <p className="font-semibold text-[15px]">{duty.hospitalName}</p>
-            <p className="text-gray-500 mt-1">🕒 {duty.dutyTime}</p>
+            <div className="flex flex-row  justify-between items-center">
+              <p className="text-gray-500 mt-1">🕒 {duty.dutyTime}</p>
+              <p className="text-black mt-1">RS 2,000</p>
+            </div>
           </div>
         ))}
       </div>
