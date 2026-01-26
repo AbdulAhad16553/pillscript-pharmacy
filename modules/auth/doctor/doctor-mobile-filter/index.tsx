@@ -22,7 +22,7 @@ const DoctorMobileFilter = ({ data }: any) => {
         </Button>
       </SheetTrigger>
 
-      <SheetContent side="bottom" className="h-[85vh] rounded-t-2xl p-0">
+      <SheetContent side="bottom" className=" rounded-t-2xl p-0">
         <SheetHeader className="px-4 py-3 border-b">
           <SheetTitle>Filter</SheetTitle>
         </SheetHeader>
@@ -30,8 +30,8 @@ const DoctorMobileFilter = ({ data }: any) => {
 
         <div className="flex gap-3 px-6 py-4 border-t">
           <div className="flex flex-col justify-center flex-1">
-            <h2 className="font-bold text-md">{data?.length}+</h2>
-            <p className="text-gray-300 text-sm">Doctors Available</p>
+            <h2 className="font-bold text-sm">{data?.length}+</h2>
+            <p className="text-gray-300 text-[12px]">Doctors Available</p>
           </div>
 
           <Button className="flex-1">Apply</Button>
