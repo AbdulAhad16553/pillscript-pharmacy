@@ -118,7 +118,7 @@ export const dummyDoctorData = [
   },
   {
     id: 2,
-    profilePicture: "/assets/images/doctor_2.png",
+    profilePicture: "/assets/images/doctor_1.png",
     name: "Dr. Sara Malik",
     email: "sara.malik@pillscript.com",
     cnic: "42101-9876543-2",
@@ -140,7 +140,7 @@ export const dummyDoctorData = [
   },
   {
     id: 3,
-    profilePicture: "/assets/images/doctor_3.png",
+    profilePicture: "/assets/images/doctor_1.png",
     name: "Dr. Usman Raza",
     email: "usman.raza@pillscript.com",
     cnic: "61101-4567890-3",
@@ -158,7 +158,7 @@ export const dummyDoctorData = [
   },
   {
     id: 4,
-    profilePicture: "/assets/images/doctor_4.png",
+    profilePicture: "/assets/images/doctor_1.png",
     name: "Dr. Ayesha Noor",
     email: "ayesha.noor@pillscript.com",
     cnic: "35202-9988776-4",
@@ -176,7 +176,7 @@ export const dummyDoctorData = [
   },
   {
     id: 5,
-    profilePicture: "/assets/images/doctor_5.png",
+    profilePicture: "/assets/images/doctor_1.png",
     name: "Dr. Bilal Hussain",
     email: "bilal.hussain@pillscript.com",
     cnic: "36501-6655443-5",
@@ -193,3 +193,33 @@ export const dummyDoctorData = [
     ],
   },
 ];
+
+export const specialityData = [
+  "Cardiologist",
+  "Dermatologist",
+  "Dentist",
+  "Gynecologist",
+  "Neurologist",
+  "Orthopedic",
+  "Pediatrician",
+  "Psychiatrist",
+  "Urologist",
+];
+
+export const districtData = [
+  "Lahore",
+  "Karachi",
+  "Islamabad",
+  "Rawalpindi",
+  "Faisalabad",
+];
+
+export const cityTownData = [
+  "DHA",
+  "Gulberg",
+  "Johar Town",
+  "Clifton",
+  "Saddar",
+];
+
+export const genderData = ["Male", "Female"];

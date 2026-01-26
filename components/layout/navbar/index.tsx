@@ -30,9 +30,9 @@ const Navbar = () => {
             <div className="relative">
               <MainLogo />
             </div>
-            <span className="text-sm md:text-lg font-bold ">
+            {/* <span className="text-sm md:text-lg font-bold ">
               Pharma <span className="text-blue-500">Force</span>
-            </span>
+            </span> */}
           </div>
 
           <div className="hidden lg:flex items-center gap-2 lg:gap-4  ">
