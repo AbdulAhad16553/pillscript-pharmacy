@@ -27,7 +27,7 @@ const FilterCheckboxList = ({ data }: Props) => {
   };
 
   return (
-    <div className="flex flex-col gap-3 h-full">
+    <div className="flex flex-col gap-3 h-full mr-3 md:mr-0">
       <button
         onClick={clearAll}
         className="text-end text-blue-500 text-sm cursor-pointer"
@@ -44,7 +44,7 @@ const FilterCheckboxList = ({ data }: Props) => {
           placeholder="Search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="pl-9"
+          className="pl-9 "
         />
       </div>
 
@@ -52,7 +52,7 @@ const FilterCheckboxList = ({ data }: Props) => {
         {filteredData.map((item) => (
           <label
             key={item}
-            className="flex items-center gap-3 text-sm cursor-pointer"
+            className="flex items-center gap-3 text-[12px] md:text-sm cursor-pointer"
           >
             <Checkbox
               checked={checkedItems.includes(item)}

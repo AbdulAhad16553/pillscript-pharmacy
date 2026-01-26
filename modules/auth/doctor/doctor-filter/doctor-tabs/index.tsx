@@ -7,11 +7,11 @@ const DoctorTabs = () => {
   return (
     <Tabs
       defaultValue="speciality"
-      className="flex gap-2 p-0 m-0 h-[350px] w-full"
+      className="flex gap-1 md:gap-2 p-0 m-0 h-[350px] w-full"
     >
       <TabsList
         className="
-      w-44
+     w-fit md:w-44
       h-full
       flex-col
       items-start

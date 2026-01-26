@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import DoctorFilter from "./doctor-filter";
+import DoctorMobileFilter from "./doctor-mobile-filter";
 
 const DoctorList = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,7 +33,11 @@ const DoctorList = () => {
             className="pl-10 w-full"
           />
         </div>
-        <div>
+        <div className="block md:hidden">
+          <DoctorMobileFilter data={filteredDoctors} />
+        </div>
+        <div className="hidden md:block">
+          {/* desktop filter  */}
           <DoctorFilter data={filteredDoctors} />
         </div>
       </div>
