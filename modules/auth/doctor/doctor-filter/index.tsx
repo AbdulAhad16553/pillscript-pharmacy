@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,9 +10,16 @@ import { Button } from "@/components/ui/button";
 import { FilterIcon } from "lucide-react";
 import DoctorTabs from "./doctor-tabs";
 
-const DoctorFilter = ({ data }: any) => {
+const DoctorFilter = ({ data, selectedFilters, setSelectedFilter }: any) => {
+  const [open, setOpen] = useState(false);
+  const [tempFilters, setTempFilters] = useState(selectedFilters);
+
+  const applySubmit = () => {
+    setSelectedFilter(tempFilters);
+    setOpen(false);
+  };
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="gap-2 text-sm">
           <FilterIcon size={16} />
@@ -25,7 +32,7 @@ const DoctorFilter = ({ data }: any) => {
           <DialogTitle className="text-center text-lg mb-0">Filter</DialogTitle>
         </DialogHeader>
 
-        <DoctorTabs />
+        <DoctorTabs filters={tempFilters} setFilters={setTempFilters} />
 
         <div className="flex gap-3 px-6 py-4 border-t">
           <div className="flex flex-col justify-center flex-1">
@@ -33,7 +40,9 @@ const DoctorFilter = ({ data }: any) => {
             <p className="text-gray-300 text-sm">Doctors Available</p>
           </div>
 
-          <Button className="flex-1">Apply</Button>
+          <Button className="flex-1" onClick={applySubmit}>
+            Apply
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

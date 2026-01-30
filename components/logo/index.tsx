@@ -3,13 +3,13 @@ import React from "react";
 
 const MainLogo = () => {
   return (
-    <div className=" ">
+    <div className="md:mx-3 ">
       <Image
-        src="/assets/svg/logo2.svg"
+        src="/assets/images/pharma.png"
         alt="PillScript Logo"
-        className="object-contain  h-[300px] md:h-[120px] "
+        className="object-contain  "
         width={100}
-        height={100}
+        height={300}
       />
     </div>
   );

@@ -3,27 +3,23 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Search } from "lucide-react";
 import { useState } from "react";
 
-interface Props {
-  title?: string;
-  data: string[];
-}
-
-const FilterCheckboxList = ({ data }: Props) => {
+const FilterCheckboxList = ({ data, value = [], onChange }: any) => {
   const [search, setSearch] = useState("");
-  const [checkedItems, setCheckedItems] = useState<string[]>([]);
 
-  const filteredData = data.filter((item) =>
+  const filteredData = data.filter((item: string) =>
     item.toLowerCase().includes(search.toLowerCase())
   );
 
   const toggleCheck = (item: string) => {
-    setCheckedItems((prev) =>
-      prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
-    );
+    if (value.includes(item)) {
+      onChange(value.filter((i: string) => i !== item));
+    } else {
+      onChange([...value, item]);
+    }
   };
 
   const clearAll = () => {
-    setCheckedItems([]);
+    onChange([]);
   };
 
   return (
@@ -35,6 +31,7 @@ const FilterCheckboxList = ({ data }: Props) => {
         Clear All
       </button>
 
+      {/* Search */}
       <div className="relative">
         <Search
           size={16}
@@ -44,18 +41,19 @@ const FilterCheckboxList = ({ data }: Props) => {
           placeholder="Search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="pl-9 "
+          className="pl-9"
         />
       </div>
 
+      {/* Checkbox list */}
       <div className="flex-1 overflow-y-auto space-y-3">
-        {filteredData.map((item) => (
+        {filteredData.map((item: string) => (
           <label
             key={item}
             className="flex items-center gap-3 text-[12px] md:text-sm cursor-pointer"
           >
             <Checkbox
-              checked={checkedItems.includes(item)}
+              checked={value.includes(item)}
               onCheckedChange={() => toggleCheck(item)}
             />
             {item}
