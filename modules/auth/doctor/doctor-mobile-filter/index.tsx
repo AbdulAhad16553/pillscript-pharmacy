@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Sheet,
   SheetContent,
@@ -12,9 +12,21 @@ import { Button } from "@/components/ui/button";
 import { FilterIcon } from "lucide-react";
 import DoctorTabs from "../doctor-filter/doctor-tabs";
 
-const DoctorMobileFilter = ({ data }: any) => {
+const DoctorMobileFilter = ({
+  data,
+  selectedFilters,
+  setSelectedFilters,
+}: any) => {
+  const [open, setOpen] = useState(false);
+  const [tempFilters, setTempFilters] = useState(selectedFilters);
+
+  const applySubmit = () => {
+    setSelectedFilters(tempFilters);
+    setOpen(false); // ✅ CLOSE SHEET
+  };
+
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       {/* Open Button */}
       <SheetTrigger asChild>
         <Button variant="outline" className="gap-2 w-full">
@@ -22,11 +34,12 @@ const DoctorMobileFilter = ({ data }: any) => {
         </Button>
       </SheetTrigger>
 
-      <SheetContent side="bottom" className=" rounded-t-2xl p-0">
+      <SheetContent side="bottom" className="rounded-t-2xl p-0">
         <SheetHeader className="px-4 py-3 border-b">
           <SheetTitle>Filter</SheetTitle>
         </SheetHeader>
-        <DoctorTabs />
+
+        <DoctorTabs filters={tempFilters} setFilters={setTempFilters} />
 
         <div className="flex gap-3 px-6 py-4 border-t">
           <div className="flex flex-col justify-center flex-1">
@@ -34,7 +47,9 @@ const DoctorMobileFilter = ({ data }: any) => {
             <p className="text-gray-300 text-[12px]">Doctors Available</p>
           </div>
 
-          <Button className="flex-1">Apply</Button>
+          <Button className="flex-1" onClick={applySubmit}>
+            Apply
+          </Button>
         </div>
       </SheetContent>
     </Sheet>
