@@ -7,7 +7,7 @@ const MainLogo = () => {
       <Image
         src="/assets/images/pharma.png"
         alt="PillScript Logo"
-        className="object-contain  "
+        className="object-contain w-[130px] md:w-[180px] "
         width={100}
         height={300}
       />
