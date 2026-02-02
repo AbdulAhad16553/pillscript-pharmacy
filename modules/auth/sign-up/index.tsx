@@ -122,8 +122,59 @@ const SignupCard = () => {
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
+              {/* LEFT SIDE – spans 2 columns */}
+              <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Row 1 */}
+                <div>
+                  <Label>Username</Label>
+                  <Input
+                    {...register("username")}
+                    placeholder="Your username"
+                  />
+                </div>
+
+                <div>
+                  <Label>Date of Birth</Label>
+                  <Input type="date" {...register("dob")} />
+                </div>
+
+                {/* Row 2 */}
+                <div>
+                  <Label>Blood Group</Label>
+                  <Select onValueChange={(v) => setValue("bloodGroup", v)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select blood group" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map(
+                        (bg) => (
+                          <SelectItem key={bg} value={bg}>
+                            {bg}
+                          </SelectItem>
+                        )
+                      )}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>Company</Label>
+                  <Select onValueChange={(v) => setValue("companyId", v)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select company" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">Company One</SelectItem>
+                      <SelectItem value="2">Company Two</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* RIGHT SIDE – profile image only */}
+              <div className="flex flex-col items-start">
                 <Label>Profile Image</Label>
+
                 {imagePreview ? (
                   <div className="relative mt-2 w-28">
                     <img
@@ -139,7 +190,7 @@ const SignupCard = () => {
                     </button>
                   </div>
                 ) : (
-                  <label className="mt-2 flex h-28 w-28 cursor-pointer flex-col items-center justify-center rounded-none border-2 border-dashed">
+                  <label className="mt-2 flex h-28 w-28 cursor-pointer flex-col items-center justify-center border-2 border-dashed">
                     <Upload className="h-6 w-6 text-gray-400" />
                     <span className="text-xs text-gray-500">Upload</span>
                     <input
@@ -151,47 +202,9 @@ const SignupCard = () => {
                   </label>
                 )}
               </div>
-              <div>
-                <Label>Username</Label>
-                <Input {...register("username")} placeholder="Your username" />
-              </div>
+            </div>
 
-              <div>
-                <Label>Date of Birth</Label>
-                <Input type="date" {...register("dob")} />
-              </div>
-
-              <div>
-                <Label>Blood Group</Label>
-                <Select onValueChange={(v) => setValue("bloodGroup", v)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select blood group" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map(
-                      (bg) => (
-                        <SelectItem key={bg} value={bg}>
-                          {bg}
-                        </SelectItem>
-                      )
-                    )}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label>Company</Label>
-                <Select onValueChange={(v) => setValue("companyId", v)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select company" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Company One</SelectItem>
-                    <SelectItem value="2">Company Two</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <Label>District</Label>
                 <Select onValueChange={(v) => setValue("districtId", v)}>
