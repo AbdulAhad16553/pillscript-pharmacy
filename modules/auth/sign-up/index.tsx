@@ -294,7 +294,7 @@ const SignupCard = () => {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="mt-3 space-y-3">
+              <div className="">
                 <Label>Phone Numbers</Label>
                 {phoneFields.map((field, index) => (
                   <>
@@ -325,7 +325,7 @@ const SignupCard = () => {
                 <Button
                   type="button"
                   size="sm"
-                  className="w-fit text-sm rounded-full "
+                  className="w-fit text-sm rounded-full mt-1 "
                   variant="outline"
                   onClick={() => appendPhone({ value: "" })}
                 >
@@ -333,7 +333,7 @@ const SignupCard = () => {
                 </Button>
               </div>
 
-              <div className="mt-3 space-y-3">
+              <div className="">
                 <Label>Email Addresses</Label>
 
                 <Input type="email" {...register("emails")} />
