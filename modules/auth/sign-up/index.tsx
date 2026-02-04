@@ -16,32 +16,25 @@ import {
 } from "@/components/ui/select";
 import { Upload, X, Plus, Trash2 } from "lucide-react";
 import Container from "@/components/container";
-import * as RPNInput from "react-phone-number-input";
-import flags from "react-phone-number-input/flags";
 import { PhoneInput } from "@/components/input-phone";
 
-const CREATE_USER_MUTATION = `
-  mutation CreateUser($input: CreateUserInput!) {
-    createUser(input: $input) {
-      id
-      username
-    }
-  }
-`;
-
-/* ---------------- Types ---------------- */
 type FormValues = {
   username: string;
-  dob: string;
+  dob: {
+    day: string;
+    month: string;
+    year: string;
+  };
   bloodGroup: string;
   companyId: string;
   districtId: string;
   baseTownId: string;
-  emails: { value: string }[];
+  emails: string;
+  cnic: any;
   phones: { value: string }[];
+  gender: any;
 };
 
-/* ---------------- Component ---------------- */
 const SignupCard = () => {
   const {
     register,
@@ -52,16 +45,9 @@ const SignupCard = () => {
     formState: { isSubmitting },
   } = useForm<FormValues>({
     defaultValues: {
-      emails: [{ value: "" }],
       phones: [{ value: "" }],
     },
   });
-
-  const {
-    fields: emailFields,
-    append: appendEmail,
-    remove: removeEmail,
-  } = useFieldArray({ control, name: "emails" });
 
   const {
     fields: phoneFields,
@@ -90,21 +76,9 @@ const SignupCard = () => {
       companyId: data.companyId,
       districtId: data.districtId,
       baseTownId: data.baseTownId,
-      emails: data.emails.map((e) => e.value),
+      emails: data.emails,
       phones: data.phones.map((p) => p.value),
     };
-
-    const res = await fetch("/graphql", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        query: CREATE_USER_MUTATION,
-        variables: { input: payload },
-      }),
-    });
-
-    const result = await res.json();
-    console.log("GraphQL Response:", result);
   };
 
   return (
@@ -121,10 +95,10 @@ const SignupCard = () => {
 
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* LEFT SIDE – spans 2 columns */}
-              <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Row 1 */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+              {/* LEFT: FORM (8 columns) */}
+              <div className="md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Username */}
                 <div>
                   <Label>Username</Label>
                   <Input
@@ -133,12 +107,86 @@ const SignupCard = () => {
                   />
                 </div>
 
+                {/* DOB */}
                 <div>
                   <Label>Date of Birth</Label>
-                  <Input type="date" {...register("dob")} />
+                  <div className="grid grid-cols-3 gap-2">
+                    <Select onValueChange={(v) => setValue("dob.day", v)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Day" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-56">
+                        {Array.from({ length: 31 }, (_, i) => i + 1).map(
+                          (d) => (
+                            <SelectItem key={d} value={String(d)}>
+                              {d}
+                            </SelectItem>
+                          )
+                        )}
+                      </SelectContent>
+                    </Select>
+
+                    <Select onValueChange={(v) => setValue("dob.month", v)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Month" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[
+                          "January",
+                          "February",
+                          "March",
+                          "April",
+                          "May",
+                          "June",
+                          "July",
+                          "August",
+                          "September",
+                          "October",
+                          "November",
+                          "December",
+                        ].map((m, i) => (
+                          <SelectItem key={m} value={String(i + 1)}>
+                            {m}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    <Select onValueChange={(v) => setValue("dob.year", v)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Year" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-56">
+                        {Array.from({ length: 80 }, (_, i) => 2025 - i).map(
+                          (y) => (
+                            <SelectItem key={y} value={String(y)}>
+                              {y}
+                            </SelectItem>
+                          )
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
-                {/* Row 2 */}
+                {/* CNIC */}
+                <div>
+                  <Label>CNIC</Label>
+                  <Input
+                    placeholder="12345-1234567-1"
+                    maxLength={15}
+                    {...register("cnic")}
+                    onChange={(e) => {
+                      let v = e.target.value.replace(/\D/g, "");
+                      if (v.length > 5) v = v.slice(0, 5) + "-" + v.slice(5);
+                      if (v.length > 13)
+                        v = v.slice(0, 13) + "-" + v.slice(13, 14);
+                      setValue("cnic", v);
+                    }}
+                  />
+                </div>
+
+                {/* Blood Group */}
                 <div>
                   <Label>Blood Group</Label>
                   <Select onValueChange={(v) => setValue("bloodGroup", v)}>
@@ -156,23 +204,9 @@ const SignupCard = () => {
                     </SelectContent>
                   </Select>
                 </div>
-
-                <div>
-                  <Label>Company</Label>
-                  <Select onValueChange={(v) => setValue("companyId", v)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select company" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">Company One</SelectItem>
-                      <SelectItem value="2">Company Two</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
               </div>
 
-              {/* RIGHT SIDE – profile image only */}
-              <div className="flex flex-col items-start">
+              <div className="md:col-span-4 flex flex-col items-start">
                 <Label>Profile Image</Label>
 
                 {imagePreview ? (
@@ -206,6 +240,18 @@ const SignupCard = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
+                <Label>Company</Label>
+                <Select onValueChange={(v) => setValue("companyId", v)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select company" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">Company One</SelectItem>
+                    <SelectItem value="2">Company Two</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
                 <Label>District</Label>
                 <Select onValueChange={(v) => setValue("districtId", v)}>
                   <SelectTrigger>
@@ -217,8 +263,6 @@ const SignupCard = () => {
                   </SelectContent>
                 </Select>
               </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6">
               <div>
                 <Label>Base Town</Label>
                 <Select
@@ -234,75 +278,61 @@ const SignupCard = () => {
                   </SelectContent>
                 </Select>
               </div>
+              <div>
+                <Label>Gender</Label>
+                <Select onValueChange={(v) => setValue("gender", v)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="male">Male</SelectItem>
+                    <SelectItem value="female">Female</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               <div className="mt-3 space-y-3">
-                <div className="flex flex-col gap-2">
-                  <h3 className="font-medium">Phone Numbers</h3>
-
-                  <Button
-                    type="button"
-                    size="sm"
-                    className="w-fit text-sm"
-                    variant="outline"
-                    onClick={() => appendPhone({ value: "" })}
-                  >
-                    <Plus className="h-4 w-4 mr-1" />
-                    Additional Phone
-                  </Button>
-                </div>
-
+                <Label>Phone Numbers</Label>
                 {phoneFields.map((field, index) => (
-                  <div key={field.id} className="flex items-center gap-2">
-                    <PhoneInput
-                      value={watch(`phones.${index}.value`)}
-                      onChange={(value) =>
-                        setValue(`phones.${index}.value`, value)
-                      }
-                    />
+                  <>
+                    <div className="flex flex-col gap-2">
+                      <div key={field.id} className="flex items-center gap-2">
+                        <PhoneInput
+                          value={watch(`phones.${index}.value`)}
+                          defaultCountry="PK"
+                          countryCallingCodeEditable={false}
+                          onChange={(value) =>
+                            setValue(`phones.${index}.value`, value)
+                          }
+                        />
 
-                    {phoneFields.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        onClick={() => removePhone(index)}
-                      >
-                        <Trash2 className="h-4 w-4 text-red-500" />
-                      </Button>
-                    )}
-                  </div>
+                        {phoneFields.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            onClick={() => removePhone(index)}
+                          >
+                            <Trash2 className="h-4 w-4 text-red-500" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </>
                 ))}
+                <Button
+                  type="button"
+                  size="sm"
+                  className="w-fit text-sm rounded-full "
+                  variant="outline"
+                  onClick={() => appendPhone({ value: "" })}
+                >
+                  <Plus className="h-4 w-4 mr-1" />
+                </Button>
               </div>
 
               <div className="mt-3 space-y-3">
-                <div className="flex flex-col gap-2 justify-between">
-                  <h3 className="font-medium">Email Addresses</h3>
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    className="w-fit text-sm"
-                    onClick={() => appendEmail({ value: "" })}
-                  >
-                    <Plus className="h-4 w-4 mr-1" /> Addition Email
-                  </Button>
-                </div>
+                <Label>Email Addresses</Label>
 
-                {emailFields.map((field, index) => (
-                  <div key={field.id} className="flex gap-2">
-                    <Input
-                      type="email"
-                      {...register(`emails.${index}.value`)}
-                    />
-                    {emailFields.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        onClick={() => removeEmail(index)}
-                      >
-                        <Trash2 className="h-4 w-4 text-red-500" />
-                      </Button>
-                    )}
-                  </div>
-                ))}
+                <Input type="email" {...register("emails")} />
               </div>
             </div>
 
