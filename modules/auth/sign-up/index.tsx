@@ -17,6 +17,8 @@ import {
 import { Upload, X, Plus, Trash2 } from "lucide-react";
 import Container from "@/components/container";
 import { PhoneInput } from "@/components/input-phone";
+import SearchableSelect from "@/components/searchableSelect";
+import { DISTRICT_TOWNS } from "@/data";
 
 type FormValues = {
   username: string;
@@ -48,6 +50,9 @@ const SignupCard = () => {
       phones: [{ value: "" }],
     },
   });
+  const [district, setDistrict] = useState<string>("");
+  const [baseTown, setBaseTown] = useState<string>("");
+  const baseTownOptions = district ? DISTRICT_TOWNS[district] || [] : [];
 
   const {
     fields: phoneFields,
@@ -186,7 +191,6 @@ const SignupCard = () => {
                   />
                 </div>
 
-                {/* Blood Group */}
                 <div>
                   <Label>Blood Group</Label>
                   <Select onValueChange={(v) => setValue("bloodGroup", v)}>
@@ -253,30 +257,30 @@ const SignupCard = () => {
               </div>
               <div>
                 <Label>District</Label>
-                <Select onValueChange={(v) => setValue("districtId", v)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select district" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">District A</SelectItem>
-                    <SelectItem value="2">District B</SelectItem>
-                  </SelectContent>
-                </Select>
+                <SearchableSelect
+                  value={district}
+                  onChange={(value) => {
+                    setDistrict(value);
+                    setValue("districtId", value);
+                    setValue("baseTownId", "");
+                  }}
+                  options={Object.keys(DISTRICT_TOWNS)}
+                  placeholder="Select district"
+                  searchPlaceholder="Search district..."
+                />
               </div>
               <div>
                 <Label>Base Town</Label>
-                <Select
-                  disabled={!districtId}
-                  onValueChange={(v) => setValue("baseTownId", v)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select base town" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Town One</SelectItem>
-                    <SelectItem value="2">Town Two</SelectItem>
-                  </SelectContent>
-                </Select>
+                <SearchableSelect
+                  value={baseTown}
+                  onChange={setBaseTown}
+                  options={baseTownOptions}
+                  placeholder={
+                    district ? "Select base town" : "Select district first"
+                  }
+                  searchPlaceholder="Search base town..."
+                  disabled={!district}
+                />
               </div>
               <div>
                 <Label>Gender</Label>
@@ -290,7 +294,7 @@ const SignupCard = () => {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="mt-3 space-y-3">
+              <div className="">
                 <Label>Phone Numbers</Label>
                 {phoneFields.map((field, index) => (
                   <>
@@ -321,7 +325,7 @@ const SignupCard = () => {
                 <Button
                   type="button"
                   size="sm"
-                  className="w-fit text-sm rounded-full "
+                  className="w-fit text-sm rounded-full mt-1 "
                   variant="outline"
                   onClick={() => appendPhone({ value: "" })}
                 >
@@ -329,7 +333,7 @@ const SignupCard = () => {
                 </Button>
               </div>
 
-              <div className="mt-3 space-y-3">
+              <div className="">
                 <Label>Email Addresses</Label>
 
                 <Input type="email" {...register("emails")} />
