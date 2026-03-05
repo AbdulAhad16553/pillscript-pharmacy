@@ -2,21 +2,134 @@
 
 import Container from "@/components/container";
 import DoctorCard from "./doctor-card";
-import { dummyDoctorData } from "@/data";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import DoctorFilter from "./doctor-filter";
 import DoctorMobileFilter from "./doctor-mobile-filter";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { client } from "@/lib/apollo-client";
+import { gql } from "@apollo/client";
+import { toast } from "sonner";
+import { useAuthenticationStatus } from "@nhost/nextjs";
+import { dummyDoctorData } from "@/data";
+
+const GET_DOCTOR = gql`
+  query GetDoctor {
+    doctor {
+      id
+      title_id
+      image_id
+      pmdc
+      doctor_name
+      father_name
+      speciality
+      qualifications
+      blood_group
+      gender
+      date_of_birth
+      cnic
+      phone_number
+      secondary_phone_number
+      email
+      created_at
+      updated_at
+      doctor_clinics {
+        id
+        clinic_number
+        clinic_detail
+      }
+      doctor_specialty_maps {
+        id
+        specialty: doctor_specialty {
+          id
+          name
+        }
+      }
+      doctor_qualification_maps {
+        id
+        qualification: doctor_qualification {
+          id
+          name
+        }
+        degree_specialization: doctor_degree_specialization {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
 
 const DoctorList = () => {
+  const { isAuthenticated } = useAuthenticationStatus();
   const [searchTerm, setSearchTerm] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-  const filteredDoctors = dummyDoctorData.filter((doctor) =>
-    doctor.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const [doctors, setDoctors] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState({});
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        setLoading(true);
+        const { data } = await client.query<{ doctor: any[] }>({
+          query: GET_DOCTOR,
+          fetchPolicy: "network-only",
+        });
+
+        const mappedDoctors =
+          data?.doctor?.map((d: any) => ({
+            id: d.id,
+            profilePicture: d.image_id
+              ? `https://lfgwnrkyoofwbvejrpqm.storage.eu-central-1.nhost.run/v1/files/${d.image_id}`
+              : "/assets/images/doctor_1.png",
+            name: d.doctor_name,
+            email: d.email,
+            cnic: d.cnic,
+            verified: !!d.pmdc,
+            pmdc: d.pmdc,
+            specialization:
+              d.speciality ||
+              d.doctor_specialty_maps?.[0]?.specialty?.name ||
+              "",
+            qualifications: d.qualifications ?? [],
+            degreeSpecialization:
+              d.doctor_qualification_maps?.[0]?.degree_specialization?.name ??
+              undefined,
+            dateOfBirth: d.date_of_birth,
+            phones: [
+              d.phone_number,
+              d.secondary_phone_number,
+            ].filter(Boolean),
+            hospitalDuties:
+              d.doctor_clinics?.map((clinic: any) => ({
+                hospitalName: clinic.clinic_detail || clinic.clinic_number,
+                dutyTime: clinic.clinic_number || "",
+              })) || [],
+          })) ?? [];
+
+        setDoctors(mappedDoctors);
+      } catch (error: any) {
+        toast.error(error.message || "Failed to load doctors");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (isAuthenticated) {
+      fetchDoctors();
+    } else {
+      setDoctors([]);
+      setLoading(false);
+    }
+  }, [isAuthenticated]);
+
+  const sourceDoctors = isAuthenticated ? doctors : dummyDoctorData;
+
+  const filteredDoctors = sourceDoctors.filter((doctor) =>
+    doctor.name?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const removeFilter = (key: any, value: string) => {
     setSelectedFilters((prev: any) => {
@@ -87,7 +200,9 @@ const DoctorList = () => {
       </ScrollArea>
 
       <div className="grid grid-cols-1 gap-4 md:gap-6 mt-6">
-        {filteredDoctors.length > 0 ? (
+        {loading ? (
+          <p className="text-gray-500 text-center">Loading doctors...</p>
+        ) : filteredDoctors.length > 0 ? (
           filteredDoctors.map((item) => (
             <DoctorCard key={item.id} data={item} />
           ))

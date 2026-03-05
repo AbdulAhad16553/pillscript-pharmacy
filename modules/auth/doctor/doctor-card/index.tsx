@@ -39,9 +39,13 @@ const DoctorCard = ({ data }: any) => {
               <p className="text-[13px] text-[#8897a2]">
                 {data.specialization}
               </p>
-              <p className="text-[13px] text-[#8897a2]">
-                MBBS,MCPS, FCPS (Obs & Gyn),JMHPE,PGD-PETM
-              </p>
+              {(data.qualifications?.length || data.degreeSpecialization) && (
+                <p className="text-[13px] text-[#8897a2]">
+                  {[...(data.qualifications || []), data.degreeSpecialization]
+                    .filter(Boolean)
+                    .join(", ")}
+                </p>
+              )}
             </div>
 
             <div className="text-sm  flex flex-col lg:flex-row space-y-1 lg:gap-2 lg:items-center">
@@ -84,7 +88,7 @@ const DoctorCard = ({ data }: any) => {
                 onClick={() => copyToClipboard(data.cnic, setCopiedKey, "cnic")}
                 className="flex items-center gap-2 text-sm cursor-pointer"
               >
-                <p>CNIC: 1231-012313-1</p>
+                <p>CNIC: {data.cnic}</p>
                 {copiedKey === "cnic" ? (
                   <Check size={14} className="text-blue-500" />
                 ) : (
@@ -99,8 +103,7 @@ const DoctorCard = ({ data }: any) => {
                   height={20}
                   className="object-contain"
                 />
-
-                <p> {formatDOB(data.dateOfBirth)}</p>
+                <span>{formatDOB(data.dateOfBirth)}</span>
               </p>
             </div>
           </div>

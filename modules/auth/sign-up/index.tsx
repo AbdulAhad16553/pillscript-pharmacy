@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,10 +18,103 @@ import { Upload, X, Plus, Trash2 } from "lucide-react";
 import Container from "@/components/container";
 import { PhoneInput } from "@/components/input-phone";
 import SearchableSelect from "@/components/searchableSelect";
-import { DISTRICT_TOWNS } from "@/data";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { client } from "@/lib/apollo-client";
+import { gql } from "@apollo/client";
+import { nhost } from "@/lib/nhost";
+import bcrypt from "bcryptjs";
+
+const GET_COMPANIES = gql`
+  query GetCompanies {
+    company(order_by: { company_fullname: asc }) {
+      company_id
+      company_fullname
+    }
+  }
+`;
+
+const GET_BASE_TOWNS = gql`
+  query GetBaseTowns($districtId: uuid!) {
+    base_town(
+      where: { district_id: { _eq: $districtId } }
+      order_by: { name: asc }
+    ) {
+      id
+      name
+    }
+  }
+`;
+
+const INSERT_USER = gql`
+  mutation InsertUser(
+    $email: citext!
+    $passwordHash: String!
+    $displayName: String!
+    $locale: String!
+  ) {
+    insertUser(
+      object: {
+        email: $email
+        passwordHash: $passwordHash
+        displayName: $displayName
+        locale: $locale
+      }
+    ) {
+      id
+    }
+  }
+`;
+
+const INSERT_PHARMACY_USER = gql`
+  mutation InsertPharmacyUser(
+    $user_id: uuid!
+    $blood_group: String
+    $image_id: uuid
+    $company_id: uuid
+    $active: Boolean
+    $district_id: uuid
+    $basetown_id: uuid
+    $gender: String
+    $cnic: String
+    $phone: String
+    $phone2: String
+    $dob: String
+  ) {
+    insert_pharmacy_users_one(
+      object: {
+        user_id: $user_id
+        blood_group: $blood_group
+        image_id: $image_id
+        company_id: $company_id
+        active: $active
+        district_id: $district_id
+        basetown_id: $basetown_id
+        gender: $gender
+        cnic: $cnic
+        phone: $phone
+        phone2: $phone2
+        dob: $dob
+      }
+    ) {
+      id
+    }
+  }
+`;
+
+const GET_DISTRICTS = gql`
+  query GetDistricts {
+    districts(order_by: { name: asc }) {
+      id
+      name
+    }
+  }
+`;
 
 type FormValues = {
   username: string;
+  email: string;
+  password: string;
   dob: {
     day: string;
     month: string;
@@ -31,13 +124,14 @@ type FormValues = {
   companyId: string;
   districtId: string;
   baseTownId: string;
-  emails: string;
   cnic: any;
   phones: { value: string }[];
   gender: any;
 };
 
 const SignupCard = () => {
+  const router = useRouter();
+
   const {
     register,
     control,
@@ -52,7 +146,19 @@ const SignupCard = () => {
   });
   const [district, setDistrict] = useState<string>("");
   const [baseTown, setBaseTown] = useState<string>("");
-  const baseTownOptions = district ? DISTRICT_TOWNS[district] || [] : [];
+  const [companies, setCompanies] = useState<
+    { company_id: string; company_fullname: string }[]
+  >([]);
+  const [loadingCompanies, setLoadingCompanies] = useState(false);
+  const [selectedCompanyName, setSelectedCompanyName] = useState<string>("");
+  const [districts, setDistricts] = useState<{ id: string; name: string }[]>(
+    []
+  );
+  const [loadingDistricts, setLoadingDistricts] = useState(false);
+  const [baseTowns, setBaseTowns] = useState<{ id: string; name: string | null }[]>(
+    []
+  );
+  const [loadingBaseTowns, setLoadingBaseTowns] = useState(false);
 
   const {
     fields: phoneFields,
@@ -62,28 +168,180 @@ const SignupCard = () => {
 
   const districtId = watch("districtId");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        setLoadingCompanies(true);
+        const { data } =
+          await client.query<{
+            company: { company_id: string; company_fullname: string }[];
+          }>({
+            query: GET_COMPANIES,
+            fetchPolicy: "network-only",
+          });
+        setCompanies(data.company);
+      } catch (error: any) {
+        toast.error(error.message || "Failed to load companies");
+      } finally {
+        setLoadingCompanies(false);
+      }
+    };
+
+    const fetchDistricts = async () => {
+      try {
+        setLoadingDistricts(true);
+        const { data } =
+          await client.query<{
+            districts: { id: string; name: string }[];
+          }>({
+            query: GET_DISTRICTS,
+            fetchPolicy: "network-only",
+          });
+        setDistricts(data.districts);
+      } catch (error: any) {
+        toast.error(error.message || "Failed to load districts");
+      } finally {
+        setLoadingDistricts(false);
+      }
+    };
+
+    const fetchBaseTowns = async (districtIdForQuery: string) => {
+      if (!districtIdForQuery) {
+        setBaseTowns([]);
+        return;
+      }
+      try {
+        setLoadingBaseTowns(true);
+        const { data } =
+          await client.query<{
+            base_town: { id: string; name: string | null }[];
+          }>({
+            query: GET_BASE_TOWNS,
+            variables: { districtId: districtIdForQuery },
+            fetchPolicy: "network-only",
+          });
+        setBaseTowns(data.base_town);
+      } catch (error: any) {
+        toast.error(error.message || "Failed to load base towns");
+      } finally {
+        setLoadingBaseTowns(false);
+      }
+    };
+
+    fetchCompanies();
+    fetchDistricts();
+
+    // If a district is already selected (e.g. when editing), load its base towns
+    if (districtId) {
+      fetchBaseTowns(districtId);
+    }
+  }, [districtId]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    setImageFile(file);
     const reader = new FileReader();
     reader.onloadend = () => setImagePreview(reader.result as string);
     reader.readAsDataURL(file);
   };
 
-  /* ---------------- Submit (GraphQL) ---------------- */
   const onSubmit = async (data: FormValues) => {
-    const payload = {
-      username: data.username,
-      dob: data.dob,
-      bloodGroup: data.bloodGroup,
-      companyId: data.companyId,
-      districtId: data.districtId,
-      baseTownId: data.baseTownId,
-      emails: data.emails,
-      phones: data.phones.map((p) => p.value),
-    };
+    try {
+      // Hash password with bcryptjs
+      const passwordHash = await bcrypt.hash(data.password, 10);
+
+      // Insert into user table
+      const userResult = await client.mutate<{
+        insertUser: { id: string };
+      }>({
+        mutation: INSERT_USER,
+        variables: {
+          email: data.email,
+          passwordHash,
+          displayName: data.username,
+          locale: "en",
+        },
+      });
+
+      const userId = userResult.data?.insertUser?.id;
+
+      if (!userId) {
+        toast.error("Failed to create user");
+        return;
+      }
+
+      // Upload profile image to Nhost storage (if provided)
+      let imageId: string | null = null;
+      if (imageFile) {
+        try {
+          const token = nhost.auth.getAccessToken();
+          const formData = new FormData();
+          formData.append("file", imageFile);
+
+          const baseStorageUrl =
+            process.env.NEXT_PUBLIC_NHOST_STORAGE_URL ||
+            "https://lfgwnrkyoofwbvejrpqm.storage.eu-central-1.nhost.run";
+
+          const res = await fetch(`${baseStorageUrl}/v1/files`, {
+            method: "POST",
+            headers: {
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            body: formData,
+          });
+
+          if (!res.ok) {
+            throw new Error("Failed to upload profile image");
+          }
+
+          const json = await res.json();
+          imageId = json?.id || json?.[0]?.id || null;
+        } catch (err: any) {
+          toast.error(
+            err?.message ||
+              "Failed to upload profile image. Continuing without it."
+          );
+        }
+      }
+
+      // Build DOB string (YYYY-MM-DD) from day/month/year (if all provided)
+      let dobString: string | null = null;
+      if (data.dob?.day && data.dob?.month && data.dob?.year) {
+        const day = data.dob.day.toString().padStart(2, "0");
+        const month = data.dob.month.toString().padStart(2, "0");
+        dobString = `${data.dob.year}-${month}-${day}`;
+      }
+
+      const phones = data.phones.map((p) => p.value).filter(Boolean);
+
+      // Insert into pharmacy_users table
+      await client.mutate({
+        mutation: INSERT_PHARMACY_USER,
+        variables: {
+          user_id: userId,
+          blood_group: data.bloodGroup || null,
+          image_id: imageId,
+          company_id: data.companyId || null,
+          active: true,
+          district_id: data.districtId || null,
+          basetown_id: data.baseTownId || null,
+          gender: data.gender || null,
+          cnic: data.cnic || null,
+          phone: phones[0] || null,
+          phone2: phones[1] || null,
+          dob: dobString,
+        },
+      });
+
+      toast.success("Account created successfully!");
+      router.push("/login");
+    } catch (error: any) {
+      toast.error(error.message || "An error occurred during sign up");
+    }
   };
 
   return (
@@ -109,6 +367,26 @@ const SignupCard = () => {
                   <Input
                     {...register("username")}
                     placeholder="Your username"
+                  />
+                </div>
+
+                {/* Email */}
+                <div>
+                  <Label>Email</Label>
+                  <Input
+                    type="email"
+                    {...register("email")}
+                    placeholder="you@example.com"
+                  />
+                </div>
+
+                {/* Password */}
+                <div>
+                  <Label>Password</Label>
+                  <Input
+                    type="password"
+                    {...register("password")}
+                    placeholder="Create a password"
                   />
                 </div>
 
@@ -221,7 +499,10 @@ const SignupCard = () => {
                     />
                     <button
                       type="button"
-                      onClick={() => setImagePreview(null)}
+                      onClick={() => {
+                        setImagePreview(null);
+                        setImageFile(null);
+                      }}
                       className="absolute -top-2 -right-2 bg-red-500 text-white rounded-md p-1"
                     >
                       <X size={14} />
@@ -245,41 +526,65 @@ const SignupCard = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <Label>Company</Label>
-                <Select onValueChange={(v) => setValue("companyId", v)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select company" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Company One</SelectItem>
-                    <SelectItem value="2">Company Two</SelectItem>
-                  </SelectContent>
-                </Select>
+                <SearchableSelect
+                  value={selectedCompanyName}
+                  onChange={(name) => {
+                    setSelectedCompanyName(name);
+                    const match = companies.find(
+                      (c) => c.company_fullname === name
+                    );
+                    setValue("companyId", match?.company_id || "");
+                  }}
+                  options={companies.map((c) => c.company_fullname)}
+                  placeholder={
+                    loadingCompanies ? "Loading companies..." : "Select company"
+                  }
+                  searchPlaceholder="Search company..."
+                  disabled={loadingCompanies || companies.length === 0}
+                />
               </div>
               <div>
                 <Label>District</Label>
                 <SearchableSelect
                   value={district}
-                  onChange={(value) => {
-                    setDistrict(value);
-                    setValue("districtId", value);
+                  onChange={(name) => {
+                    setDistrict(name);
+                    const match = districts.find((d) => d.name === name);
+                    setValue("districtId", match?.id || "");
+                    setBaseTown("");
                     setValue("baseTownId", "");
                   }}
-                  options={Object.keys(DISTRICT_TOWNS)}
-                  placeholder="Select district"
+                  options={districts.map((d) => d.name)}
+                  placeholder={
+                    loadingDistricts ? "Loading districts..." : "Select district"
+                  }
                   searchPlaceholder="Search district..."
+                  disabled={loadingDistricts || districts.length === 0}
                 />
               </div>
               <div>
                 <Label>Base Town</Label>
                 <SearchableSelect
                   value={baseTown}
-                  onChange={setBaseTown}
-                  options={baseTownOptions}
+                  onChange={(name) => {
+                    setBaseTown(name);
+                    const match = baseTowns.find((t) => t.name === name);
+                    setValue("baseTownId", match?.id || "");
+                  }}
+                  options={baseTowns
+                    .map((t) => t.name)
+                    .filter((n): n is string => !!n)}
                   placeholder={
-                    district ? "Select base town" : "Select district first"
+                    !district
+                      ? "Select district first"
+                      : loadingBaseTowns
+                      ? "Loading base towns..."
+                      : "Select base town"
                   }
                   searchPlaceholder="Search base town..."
-                  disabled={!district}
+                  disabled={
+                    !district || loadingBaseTowns || baseTowns.length === 0
+                  }
                 />
               </div>
               <div>
@@ -331,12 +636,6 @@ const SignupCard = () => {
                 >
                   <Plus className="h-4 w-4 mr-1" />
                 </Button>
-              </div>
-
-              <div className="">
-                <Label>Email Addresses</Label>
-
-                <Input type="email" {...register("emails")} />
               </div>
             </div>
 
