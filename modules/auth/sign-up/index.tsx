@@ -345,8 +345,8 @@ const SignupCard = () => {
   };
 
   return (
-    <Container>
-      <Card className="shadow-2xl border rounded-2xl w-full max-w-4xl mx-auto mb-4 mt-4">
+    <Container className="flex justify-center items-start md:items-center min-h-[70vh]">
+      <Card className="shadow-2xl border rounded-2xl w-full max-w-4xl mx-auto">
         <CardHeader>
           <CardTitle className="text-2xl font-semibold">
             Create Account

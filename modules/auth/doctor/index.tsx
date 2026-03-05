@@ -84,7 +84,7 @@ const DoctorList = () => {
             id: d.id,
             profilePicture: d.image_id
               ? `https://lfgwnrkyoofwbvejrpqm.storage.eu-central-1.nhost.run/v1/files/${d.image_id}`
-              : "/assets/images/doctor_1.png",
+              : "/assets/svg/logo2.svg",
             name: d.doctor_name,
             email: d.email,
             cnic: d.cnic,

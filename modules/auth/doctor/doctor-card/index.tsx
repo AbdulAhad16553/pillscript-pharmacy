@@ -96,13 +96,6 @@ const DoctorCard = ({ data }: any) => {
                 )}
               </div>
               <p className=" text-gray-400 flex gap-2  items-center text-[13px]">
-                <Image
-                  src="/assets/images/cake.png"
-                  alt="cake"
-                  width={20}
-                  height={20}
-                  className="object-contain"
-                />
                 <span>{formatDOB(data.dateOfBirth)}</span>
               </p>
             </div>
