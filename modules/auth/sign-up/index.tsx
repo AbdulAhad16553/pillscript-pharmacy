@@ -181,7 +181,7 @@ const SignupCard = () => {
             query: GET_COMPANIES,
             fetchPolicy: "network-only",
           });
-        setCompanies(data.company);
+        setCompanies(data?.company || []);
       } catch (error: any) {
         toast.error(error.message || "Failed to load companies");
       } finally {
@@ -199,7 +199,7 @@ const SignupCard = () => {
             query: GET_DISTRICTS,
             fetchPolicy: "network-only",
           });
-        setDistricts(data.districts);
+        setDistricts(data?.districts || []);
       } catch (error: any) {
         toast.error(error.message || "Failed to load districts");
       } finally {
@@ -222,7 +222,7 @@ const SignupCard = () => {
             variables: { districtId: districtIdForQuery },
             fetchPolicy: "network-only",
           });
-        setBaseTowns(data.base_town);
+        setBaseTowns(data?.base_town || []);
       } catch (error: any) {
         toast.error(error.message || "Failed to load base towns");
       } finally {

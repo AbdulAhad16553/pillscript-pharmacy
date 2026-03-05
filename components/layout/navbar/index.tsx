@@ -32,7 +32,6 @@ const Navbar = () => {
   const [displayName, setDisplayName] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     const loadProfile = async () => {
       try {
@@ -80,9 +79,6 @@ const Navbar = () => {
 
     if (isAuthenticated) {
       loadProfile();
-    } else {
-      setProfileImageUrl(null);
-      setDisplayName(null);
     }
   }, [isAuthenticated]);
 

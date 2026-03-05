@@ -25,17 +25,20 @@ export const client = new ApolloClient({
       Query: {
         fields: {
           users: {
-            merge(_existing = [], incoming) {
+            merge(existing = [], incoming) {
+              void existing;
               return incoming;
             },
           },
           pharmacy_users: {
-            merge(_existing = [], incoming) {
+            merge(existing = [], incoming) {
+              void existing;
               return incoming;
             },
           },
           company: {
-            merge(_existing = [], incoming) {
+            merge(existing = [], incoming) {
+              void existing;
               return incoming;
             },
           },
