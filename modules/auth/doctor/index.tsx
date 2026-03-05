@@ -69,6 +69,7 @@ const DoctorList = () => {
   const [loading, setLoading] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState({});
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     const fetchDoctors = async () => {
       try {

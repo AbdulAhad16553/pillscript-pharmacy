@@ -16,8 +16,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-import { COMPANY_OPTIONS, DISTRICT_TOWNS } from "@/data"
-
 const SearchableSelect = ({
   value,
   onChange,

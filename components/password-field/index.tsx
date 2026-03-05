@@ -1,5 +1,4 @@
 import React, { useRef, useState } from "react"
-import { Button } from "../ui/button"
 
 interface PasswordInputFieldProps {
   length?: number
@@ -13,7 +12,6 @@ const PasswordInputField: React.FC<PasswordInputFieldProps> = ({
   onComplete,
 }) => {
   const [values, setValues] = useState<string[]>(Array(length).fill(""))
-  const [show, setShow] = useState(false)
   const inputsRef = useRef<Array<HTMLInputElement | null>>([])
 
   // Handle single digit input
@@ -85,7 +83,7 @@ const PasswordInputField: React.FC<PasswordInputFieldProps> = ({
             <input
               key={index}
               ref={(el:any) => (inputsRef.current[index] = el)}
-              type={show ? "text" : "password"}
+              type="password"
               inputMode="numeric"
               pattern="[0-9]*"
               autoComplete="one-time-code"
@@ -102,17 +100,6 @@ const PasswordInputField: React.FC<PasswordInputFieldProps> = ({
           )
         })}
       </div>
-
-      
-      {/* <Button
-        type="button"
-        variant={'outline'}
-        size="sm"
-        onClick={() => setShow((prev) => !prev)}
-        className="text-sm text-gray-600 hover:text-black"
-      >
-        {show ? "Hide PIN" : "Show PIN"}
-      </Button> */}
     </div>
   )
 }
