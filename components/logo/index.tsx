@@ -5,11 +5,11 @@ const MainLogo = () => {
   return (
     <div className="md:mx-3 ">
       <Image
-        src="/assets/images/pharma.png"
+        src="/assets/svg/logo2.svg"
         alt="PillScript Logo"
-        className="object-contain w-[130px] md:w-[180px] "
-        width={100}
-        height={300}
+        className="object-contain w-[200px] md:w-[220px] h-[65px] md:h-[56px]"
+        width={220}
+        height={46}
       />
     </div>
   );

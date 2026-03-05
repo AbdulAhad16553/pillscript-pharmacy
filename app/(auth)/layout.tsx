@@ -1,13 +1,10 @@
-import TopNavbar from "@/components/layout/top-header";
-
 export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <div className="">
-        <TopNavbar />
+    <div className="min-h-screen">
       {children}
     </div>
   );
