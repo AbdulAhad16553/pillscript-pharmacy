@@ -268,7 +268,7 @@ const SignupCard = () => {
         return;
       }
 
-      const userId = signUpResult.user?.id;
+      const userId = signUpResult.session?.user.id;
       if (!userId) {
         toast.error("Failed to get user id from auth signup");
         return;
