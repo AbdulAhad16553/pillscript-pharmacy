@@ -260,9 +260,7 @@ const SignupCard = () => {
         options: {
           displayName: data.username,
           locale: "en",
-          redirectTo: typeof window !== "undefined"
-            ? `${window.location.origin}/login`
-            : "/login",
+         
         },
       });
 
