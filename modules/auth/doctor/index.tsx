@@ -90,6 +90,7 @@ const DoctorList = () => {
             cnic: d.cnic,
             verified: !!d.pmdc,
             pmdc: d.pmdc,
+            gender: d.gender,
             specialization:
               d.speciality ||
               d.doctor_specialty_maps?.[0]?.specialty?.name ||
@@ -103,6 +104,9 @@ const DoctorList = () => {
               d.phone_number,
               d.secondary_phone_number,
             ].filter(Boolean),
+            district: d.district,
+            cityTown: d.city_town,
+            locality: d.locality,
             hospitalDuties:
               d.doctor_clinics?.map((clinic: any) => ({
                 hospitalName: clinic.clinic_detail || clinic.clinic_number,
@@ -128,9 +132,74 @@ const DoctorList = () => {
 
   const sourceDoctors = isAuthenticated ? doctors : dummyDoctorData;
 
-  const filteredDoctors = sourceDoctors.filter((doctor) =>
-    doctor.name?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredDoctors = sourceDoctors.filter((doctor) => {
+    const matchesSearch =
+      doctor.name?.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const filters = selectedFilters as {
+      speciality?: string[];
+      district?: string[];
+      "city-town"?: string[];
+      locality?: string[];
+      gender?: string[];
+    };
+    const selectedSpecialities = filters.speciality ?? [];
+    const selectedDistricts = filters.district ?? [];
+    const selectedCityTowns = filters["city-town"] ?? [];
+    const selectedLocalities = filters.locality ?? [];
+    const selectedGenders = filters.gender ?? [];
+
+    const matchesSpeciality =
+      selectedSpecialities.length === 0 ||
+      (doctor.specialization &&
+        selectedSpecialities.some((s) =>
+          doctor.specialization.toLowerCase().includes(s.toLowerCase())
+        ));
+
+    const matchesGender =
+      selectedGenders.length === 0 ||
+      (doctor.gender && selectedGenders.includes(doctor.gender));
+
+    const doctorLocations = [
+      doctor.district,
+      doctor.cityTown,
+      doctor.locality,
+      ...(doctor.hospitalDuties ?? []).map((d: any) => d.hospitalName),
+    ].filter(Boolean);
+
+    const matchesDistrict =
+      selectedDistricts.length === 0 ||
+      selectedDistricts.some((d) =>
+        doctorLocations.some((loc: string) =>
+          String(loc).toLowerCase().includes(d.toLowerCase())
+        )
+      );
+
+    const matchesCityTown =
+      selectedCityTowns.length === 0 ||
+      selectedCityTowns.some((c) =>
+        doctorLocations.some((loc: string) =>
+          String(loc).toLowerCase().includes(c.toLowerCase())
+        )
+      );
+
+    const matchesLocality =
+      selectedLocalities.length === 0 ||
+      selectedLocalities.some((l) =>
+        doctorLocations.some((loc: string) =>
+          String(loc).toLowerCase().includes(l.toLowerCase())
+        )
+      );
+
+    return (
+      matchesSearch &&
+      matchesSpeciality &&
+      matchesGender &&
+      matchesDistrict &&
+      matchesCityTown &&
+      matchesLocality
+    );
+  });
 
   const removeFilter = (key: any, value: string) => {
     setSelectedFilters((prev: any) => {

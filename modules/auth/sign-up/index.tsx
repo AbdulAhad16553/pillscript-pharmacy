@@ -251,10 +251,30 @@ const SignupCard = () => {
 
   const onSubmit = async (data: FormValues) => {
     try {
-      // Hash password with bcryptjs
+      // 1. Create Nhost Auth user first - this sends verification email when
+      //    "Require Verified Emails" is enabled in Nhost Dashboard:
+      //    Settings → Sign-In Methods → Email and Password
+      const signUpResult = await nhost.auth.signUp({
+        email: data.email,
+        password: data.password,
+        options: {
+          displayName: data.username,
+          locale: "en",
+          redirectTo: typeof window !== "undefined"
+            ? `${window.location.origin}/login`
+            : "/login",
+        },
+      });
+
+      if (signUpResult.error) {
+        toast.error(signUpResult.error.message);
+        return;
+      }
+
+      // Hash password for our custom user table
       const passwordHash = await bcrypt.hash(data.password, 10);
 
-      // Insert into user table
+      // Insert into user table (links to auth via email match; navbar fetches by email)
       const userResult = await client.mutate<{
         insertUser: { id: string };
       }>({
@@ -337,7 +357,13 @@ const SignupCard = () => {
         },
       });
 
-      toast.success("Account created successfully!");
+      // When email verification is required, session is null - user must verify first
+      const needsVerification = !signUpResult.session;
+      toast.success(
+        needsVerification
+          ? "Account created! Please check your email to verify your account before signing in."
+          : "Account created successfully!"
+      );
       router.push("/login");
     } catch (error: any) {
       toast.error(error.message || "An error occurred during sign up");

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -13,6 +13,10 @@ import DoctorTabs from "./doctor-tabs";
 const DoctorFilter = ({ data, selectedFilters, setSelectedFilter }: any) => {
   const [open, setOpen] = useState(false);
   const [tempFilters, setTempFilters] = useState(selectedFilters);
+
+  useEffect(() => {
+    if (open) setTempFilters(selectedFilters);
+  }, [open, selectedFilters]);
 
   const applySubmit = () => {
     setSelectedFilter(tempFilters);

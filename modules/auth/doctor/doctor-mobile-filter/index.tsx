@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Sheet,
   SheetContent,
@@ -19,6 +19,10 @@ const DoctorMobileFilter = ({
 }: any) => {
   const [open, setOpen] = useState(false);
   const [tempFilters, setTempFilters] = useState(selectedFilters);
+
+  useEffect(() => {
+    if (open) setTempFilters(selectedFilters);
+  }, [open, selectedFilters]);
 
   const applySubmit = () => {
     setSelectedFilters(tempFilters);
