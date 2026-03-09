@@ -260,7 +260,6 @@ const SignupCard = () => {
         options: {
           displayName: data.username,
           locale: "en",
-         
         },
       });
 
@@ -269,26 +268,9 @@ const SignupCard = () => {
         return;
       }
 
-      // Hash password for our custom user table
-      const passwordHash = await bcrypt.hash(data.password, 10);
-
-      // Insert into user table (links to auth via email match; navbar fetches by email)
-      const userResult = await client.mutate<{
-        insertUser: { id: string };
-      }>({
-        mutation: INSERT_USER,
-        variables: {
-          email: data.email,
-          passwordHash,
-          displayName: data.username,
-          locale: "en",
-        },
-      });
-
-      const userId = userResult.data?.insertUser?.id;
-
+      const userId = signUpResult.user?.id;
       if (!userId) {
-        toast.error("Failed to create user");
+        toast.error("Failed to get user id from auth signup");
         return;
       }
 
