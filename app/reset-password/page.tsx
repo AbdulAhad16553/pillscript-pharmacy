@@ -22,6 +22,11 @@ export default function ResetPasswordPage() {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     const t = params.get("ticket");
+    if (!t) {
+      // If user visits /reset-password without a valid ticket, send them to forgot-password
+      router.replace("/forgot-password");
+      return;
+    }
     setTicket(t);
   }, []);
 
@@ -48,7 +53,8 @@ export default function ResetPasswordPage() {
       });
 
       if (error) {
-        toast.error(error.message);
+        toast.error(error.message || "Invalid or expired reset link. Please request a new one.");
+        router.replace("/forgot-password");
         return;
       }
 

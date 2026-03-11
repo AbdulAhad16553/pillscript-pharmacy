@@ -26,8 +26,8 @@ export default function ForgotPasswordPage() {
         options: {
           redirectTo:
             typeof window !== "undefined"
-              ? `${window.location.origin}/reset-password`
-              : "/reset-password",
+              ? `${window.location.origin}/`
+              : "/",
         },
       });
 

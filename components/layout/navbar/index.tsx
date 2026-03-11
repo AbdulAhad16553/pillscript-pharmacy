@@ -3,7 +3,6 @@ import Container from "@/components/container";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import LoginDialog from "@/modules/home-module/compoents/login-dialog";
 import { MenuData } from "@/data";
 import { usePathname } from "next/navigation";
 import MainLogo from "@/components/logo";
@@ -12,6 +11,14 @@ import { nhost } from "@/lib/nhost";
 import { client } from "@/lib/apollo-client";
 import { gql } from "@apollo/client";
 import Image from "next/image";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const GET_PHARMACY_USER = gql`
   query GetPharmacyUserProfile($email: citext!) {
@@ -31,6 +38,9 @@ const Navbar = () => {
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
   const [displayName, setDisplayName] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [changingPassword, setChangingPassword] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -87,6 +97,26 @@ const Navbar = () => {
     setMenuOpen(false);
   };
 
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newPassword || newPassword.length < 6) return;
+    setChangingPassword(true);
+    try {
+      const { error } = await nhost.auth.changePassword({
+        newPassword,
+      });
+      if (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+        return;
+      }
+      setNewPassword("");
+      setChangePasswordOpen(false);
+    } finally {
+      setChangingPassword(false);
+    }
+  };
+
   return (
     <nav className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-200">
       <Container>
@@ -112,7 +142,14 @@ const Navbar = () => {
           <div className="flex items-center space-x-3">
             {!isAuthenticated && (
               <>
-                <LoginDialog />
+                <Link href="/login">
+                  <Button
+                    size="sm"
+                    className="bg-black text-white rounded-full hover:bg-black/80 hover:text-white border transition-all"
+                  >
+                    Log in
+                  </Button>
+                </Link>
                 <Link href="/signup">
                   <Button
                     variant={"outline"}
@@ -148,6 +185,15 @@ const Navbar = () => {
                 {menuOpen && (
                   <div className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-md py-1 z-50">
                     <button
+                      onClick={() => {
+                        setChangePasswordOpen(true);
+                        setMenuOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                    >
+                      Update password
+                    </button>
+                    <button
                       onClick={handleSignOut}
                       className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
                     >
@@ -159,6 +205,31 @@ const Navbar = () => {
             )}
           </div>
         </div>
+        <Dialog open={changePasswordOpen} onOpenChange={setChangePasswordOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Update password</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleChangePassword} className="space-y-4">
+              <div>
+                <Label>New password</Label>
+                <Input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={changingPassword}
+              >
+                {changingPassword ? "Updating..." : "Update password"}
+              </Button>
+            </form>
+          </DialogContent>
+        </Dialog>
       </Container>
     </nav>
   );
