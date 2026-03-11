@@ -33,6 +33,40 @@ export default function LoginPage() {
       }
 
       if (session) {
+        // Check if this user has an active pharmacy_users row
+        const userId = session.user?.id;
+        if (!userId) {
+          toast.error("Could not determine user id.");
+          return;
+        }
+
+        const { data, error: gqlError } = await nhost.graphql.request(
+          `
+          query CheckPharmacyUser($userId: uuid!) {
+            pharmacy_users(where: { user_id: { _eq: $userId } }) {
+              active
+            }
+          }
+        `,
+          { userId }
+        );
+
+        if (gqlError) {
+          const msg = Array.isArray(gqlError)
+            ? gqlError[0]?.message
+            : (gqlError as { message?: string }).message;
+          toast.error(msg || "Failed to verify account status.");
+          return;
+        }
+
+        const record = data?.pharmacy_users?.[0];
+
+        if (!record || !record.active) {
+          await nhost.auth.signOut();
+          toast.error("You are not approved by owner.");
+          return;
+        }
+
         toast.success("Login successful!");
         router.push("/");
       }

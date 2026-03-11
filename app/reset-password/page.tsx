@@ -113,7 +113,7 @@ export default function ResetPasswordPage() {
               <Button
                 type="submit"
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-                disabled={loading || !ticket}
+                disabled={loading}
               >
                 {loading ? "Updating..." : "Update password"}
               </Button>
