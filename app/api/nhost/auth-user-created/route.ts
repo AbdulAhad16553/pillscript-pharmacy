@@ -1,10 +1,6 @@
-"use server";
-
 import { NextRequest, NextResponse } from "next/server";
-import { client } from "@/lib/apollo-client";
-import { gql } from "@apollo/client";
 
-const INSERT_PHARMACY_USER = gql`
+const INSERT_PHARMACY_USER_MUTATION = `
   mutation InsertPharmacyUser(
     $user_id: uuid!
     $blood_group: String
@@ -36,6 +32,44 @@ const INSERT_PHARMACY_USER = gql`
   }
 `;
 
+async function callGraphQL(query: string, variables: Record<string, any>) {
+  const subdomain =
+    process.env.NEXT_PUBLIC_NHOST_SUBDOMAIN || "lfgwnrkyoofwbvejrpqm";
+  const region = process.env.NEXT_PUBLIC_NHOST_REGION || "eu-central-1";
+
+  const graphqlUrl =
+    process.env.NHOST_GRAPHQL_URL ||
+    `https://${subdomain}.graphql.${region}.nhost.run/v1`;
+
+  const adminSecret =
+    process.env.NHOST_ADMIN_SECRET ||
+    process.env.HASURA_GRAPHQL_ADMIN_SECRET;
+
+  if (!adminSecret) {
+    throw new Error(
+      "Missing NHOST_ADMIN_SECRET or HASURA_GRAPHQL_ADMIN_SECRET environment variable."
+    );
+  }
+
+  const res = await fetch(graphqlUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-hasura-admin-secret": adminSecret,
+    },
+    body: JSON.stringify({ query, variables }),
+  });
+
+  const json = await res.json();
+  if (!res.ok || json.errors) {
+    throw new Error(
+      json.errors?.[0]?.message || `GraphQL error with status ${res.status}`
+    );
+  }
+
+  return json.data;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -52,20 +86,17 @@ export async function POST(req: NextRequest) {
       ? pharmacy.phones
       : [];
 
-    await client.mutate({
-      mutation: INSERT_PHARMACY_USER,
-      variables: {
-        user_id: authUserId,
-        blood_group: pharmacy.bloodGroup || null,
-        company_id: pharmacy.companyId || null,
-        district_id: pharmacy.districtId || null,
-        basetown_id: pharmacy.baseTownId || null,
-        gender: pharmacy.gender || null,
-        cnic: pharmacy.cnic || null,
-        phone: phones[0] || null,
-        phone2: phones[1] || null,
-        dob: pharmacy.dob || null,
-      },
+    await callGraphQL(INSERT_PHARMACY_USER_MUTATION, {
+      user_id: authUserId,
+      blood_group: pharmacy.bloodGroup || null,
+      company_id: pharmacy.companyId || null,
+      district_id: pharmacy.districtId || null,
+      basetown_id: pharmacy.baseTownId || null,
+      gender: pharmacy.gender || null,
+      cnic: pharmacy.cnic || null,
+      phone: phones[0] || null,
+      phone2: phones[1] || null,
+      dob: pharmacy.dob || null,
     });
 
     return NextResponse.json({ ok: true }, { status: 200 });
