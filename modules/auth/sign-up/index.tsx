@@ -23,7 +23,6 @@ import { toast } from "sonner";
 import { client } from "@/lib/apollo-client";
 import { gql } from "@apollo/client";
 import { nhost } from "@/lib/nhost";
-import bcrypt from "bcryptjs";
 
 const GET_COMPANIES = gql`
   query GetCompanies {
@@ -42,62 +41,6 @@ const GET_BASE_TOWNS = gql`
     ) {
       id
       name
-    }
-  }
-`;
-
-const INSERT_USER = gql`
-  mutation InsertUser(
-    $email: citext!
-    $passwordHash: String!
-    $displayName: String!
-    $locale: String!
-  ) {
-    insertUser(
-      object: {
-        email: $email
-        passwordHash: $passwordHash
-        displayName: $displayName
-        locale: $locale
-      }
-    ) {
-      id
-    }
-  }
-`;
-
-const INSERT_PHARMACY_USER = gql`
-  mutation InsertPharmacyUser(
-    $user_id: uuid!
-    $blood_group: String
-    $image_id: uuid
-    $company_id: uuid
-    $active: Boolean
-    $district_id: uuid
-    $basetown_id: uuid
-    $gender: String
-    $cnic: String
-    $phone: String
-    $phone2: String
-    $dob: String
-  ) {
-    insert_pharmacy_users_one(
-      object: {
-        user_id: $user_id
-        blood_group: $blood_group
-        image_id: $image_id
-        company_id: $company_id
-        active: $active
-        district_id: $district_id
-        basetown_id: $basetown_id
-        gender: $gender
-        cnic: $cnic
-        phone: $phone
-        phone2: $phone2
-        dob: $dob
-      }
-    ) {
-      id
     }
   }
 `;
@@ -254,12 +197,30 @@ const SignupCard = () => {
       // 1. Create Nhost Auth user first - this sends verification email when
       //    "Require Verified Emails" is enabled in Nhost Dashboard:
       //    Settings → Sign-In Methods → Email and Password
+      const phones = data.phones.map((p) => p.value).filter(Boolean);
+      const dobForMeta =
+        data.dob?.day && data.dob?.month && data.dob?.year
+          ? `${data.dob.year}-${String(data.dob.month).padStart(2, "0")}-${String(data.dob.day).padStart(2, "0")}`
+          : null;
+
       const signUpResult = await nhost.auth.signUp({
         email: data.email,
         password: data.password,
         options: {
           displayName: data.username,
           locale: "en",
+          metadata: {
+            pharmacy: {
+              bloodGroup: data.bloodGroup || null,
+              companyId: data.companyId || null,
+              districtId: data.districtId || null,
+              baseTownId: data.baseTownId || null,
+              gender: data.gender || null,
+              cnic: data.cnic || null,
+              phones,
+              dob: dobForMeta,
+            },
+          },
         },
       });
 
@@ -268,82 +229,15 @@ const SignupCard = () => {
         return;
       }
 
-      const userId = signUpResult.session?.user.id;
-      if (!userId) {
-        toast.error("Failed to get user id from auth signup");
-        return;
-      }
-
-      // Upload profile image to Nhost storage (if provided)
-      let imageId: string | null = null;
-      if (imageFile) {
-        try {
-          const token = nhost.auth.getAccessToken();
-          const formData = new FormData();
-          formData.append("file", imageFile);
-
-          const baseStorageUrl =
-            process.env.NEXT_PUBLIC_NHOST_STORAGE_URL ||
-            "https://lfgwnrkyoofwbvejrpqm.storage.eu-central-1.nhost.run";
-
-          const res = await fetch(`${baseStorageUrl}/v1/files`, {
-            method: "POST",
-            headers: {
-              ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            },
-            body: formData,
-          });
-
-          if (!res.ok) {
-            throw new Error("Failed to upload profile image");
-          }
-
-          const json = await res.json();
-          imageId = json?.id || json?.[0]?.id || null;
-        } catch (err: any) {
-          toast.error(
-            err?.message ||
-              "Failed to upload profile image. Continuing without it."
-          );
-        }
-      }
-
-      // Build DOB string (YYYY-MM-DD) from day/month/year (if all provided)
-      let dobString: string | null = null;
-      if (data.dob?.day && data.dob?.month && data.dob?.year) {
-        const day = data.dob.day.toString().padStart(2, "0");
-        const month = data.dob.month.toString().padStart(2, "0");
-        dobString = `${data.dob.year}-${month}-${day}`;
-      }
-
-      const phones = data.phones.map((p) => p.value).filter(Boolean);
-
-      // Insert into pharmacy_users table
-      await client.mutate({
-        mutation: INSERT_PHARMACY_USER,
-        variables: {
-          user_id: userId,
-          blood_group: data.bloodGroup || null,
-          image_id: imageId,
-          company_id: data.companyId || null,
-          active: true,
-          district_id: data.districtId || null,
-          basetown_id: data.baseTownId || null,
-          gender: data.gender || null,
-          cnic: data.cnic || null,
-          phone: phones[0] || null,
-          phone2: phones[1] || null,
-          dob: dobString,
-        },
-      });
-
-      // When email verification is required, session is null - user must verify first
       const needsVerification = !signUpResult.session;
-      toast.success(
-        needsVerification
-          ? "Account created! Please check your email to verify your account before signing in."
-          : "Account created successfully!"
-      );
+
+      if (needsVerification) {
+        toast.success(
+          "Account created! Please check your email to verify your account before signing in."
+        );
+      } else {
+        toast.success("Account created successfully!");
+      }
       router.push("/login");
     } catch (error: any) {
       toast.error(error.message || "An error occurred during sign up");

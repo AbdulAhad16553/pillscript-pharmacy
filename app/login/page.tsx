@@ -36,8 +36,8 @@ export default function LoginPage() {
         toast.success("Login successful!");
         router.push("/");
       }
-    } catch (error: any) {
-      toast.error(error.message || "An error occurred during login");
+    } catch (error: unknown) {
+      toast.error((error as Error).message || "An error occurred during login");
     } finally {
       setLoading(false);
     }
